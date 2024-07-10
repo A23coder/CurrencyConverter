@@ -3,9 +3,11 @@ package com.example.currenyconverter
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,13 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,29 +49,23 @@ fun ConvertUi(
     amount: String = "0.0" ,
     onAmountChange: (String) -> Unit ,
 ) {
+    val context = LocalContext.current
     val currencies = listOf(
         "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD" ,
-        "AUD" ,
-        "EUR" ,
-        "GBP" ,
-        "JPY" ,
-        "CNY" ,
-        "CAD" ,
-        "CHF" ,
-        "NZD" ,
-        "SGD"
+        "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
+    )
+    val currenciesConverted = listOf(
+        "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD" ,
+        "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
     )
     var selectedOptionText by remember { mutableStateOf(currencies[0]) }
+    var selectedOptionTextConverted by remember { mutableStateOf(currenciesConverted[4]) }
 
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    var text by remember {
-        mutableStateOf("")
-    }
-    Column(
-        Modifier.wrapContentSize()
-    ) {
+    var expanded by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+
+    Column(Modifier.wrapContentSize()) {
         Text(
             modifier = modifier.padding(top = 10.dp , start = 10.dp , bottom = 10.dp) ,
             text = "Amount" ,
@@ -77,9 +74,7 @@ fun ConvertUi(
             )
         )
     }
-    Column(
-        Modifier.fillMaxWidth()
-    ) {
+    Column(Modifier.fillMaxSize()) {
         Row(
             modifier = modifier
                 .padding(10.dp)
@@ -102,7 +97,9 @@ fun ConvertUi(
                         unfocusedContainerColor = Color.White
                     ) ,
                     textStyle = TextStyle(
-                        fontSize = 20.sp
+                        fontSize = 20.sp ,
+                        color = colorResource(id = R.color.lightBlue) ,
+                        fontWeight = FontWeight.W500
                     )
                 )
                 ExposedDropdownMenu(
@@ -127,7 +124,8 @@ fun ConvertUi(
                     }
                 }
             }
-            TextField(value = text ,
+            TextField(
+                value = text ,
                 onValueChange = { text = it } ,
                 maxLines = 1 ,
                 textStyle = TextStyle(fontSize = 18.sp) ,
@@ -141,7 +139,8 @@ fun ConvertUi(
                 modifier = Modifier
                     .height(55.dp)
                     .padding(start = 5.dp)
-                    .clip(RoundedCornerShape(10.dp)))
+                    .clip(RoundedCornerShape(10.dp))
+            )
         }
         Column(modifier.fillMaxWidth()) {
             Box(
@@ -162,17 +161,19 @@ fun ConvertUi(
                         .background(color = Color(0xFF1A237E) , shape = RoundedCornerShape(50.dp))
                 ) {
                     Icon(
-                        painterResource(id = R.drawable.ic_money) ,
+                        painter = painterResource(id = R.drawable.ic_money) ,
                         contentDescription = "Swap" ,
                         tint = Color.White ,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                generateToast(context , selectedOptionText , selectedOptionTextConverted)
+                            } ,
                     )
                 }
             }
         }
-        Column(
-            Modifier.wrapContentSize()
-        ) {
+        Column(modifier.wrapContentSize()) {
             Text(
                 modifier = modifier.padding(top = 10.dp , start = 10.dp , bottom = 10.dp) ,
                 text = "Converted Amount" ,
@@ -181,39 +182,39 @@ fun ConvertUi(
                 )
             )
         }
-        Column(
-            Modifier.fillMaxWidth()
-        ) {
+        Column(modifier.fillMaxWidth()) {
             Row(
                 modifier = modifier
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
                 ExposedDropdownMenuBox(
-                    expanded = expanded ,
-                    onExpandedChange = { expanded = !expanded } ,
+                    expanded = isExpanded ,
+                    onExpandedChange = { isExpanded = !isExpanded } ,
                 ) {
                     TextField(
                         modifier = Modifier
                             .menuAnchor()
                             .fillMaxWidth(.5f) ,
                         readOnly = true ,
-                        value = selectedOptionText ,
+                        value = selectedOptionTextConverted ,
                         onValueChange = {} ,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) } ,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) } ,
                         colors = ExposedDropdownMenuDefaults.textFieldColors(
                             focusedContainerColor = Color.White ,
                             unfocusedContainerColor = Color.White
                         ) ,
                         textStyle = TextStyle(
-                            fontSize = 20.sp
+                            fontSize = 20.sp ,
+                            color = colorResource(id = R.color.lightBlue) ,
+                            fontWeight = FontWeight.W500
                         )
                     )
                     ExposedDropdownMenu(
-                        expanded = expanded ,
-                        onDismissRequest = { expanded = false } ,
+                        expanded = isExpanded ,
+                        onDismissRequest = { isExpanded = false } ,
                     ) {
-                        currencies.forEach { selectionOption ->
+                        currenciesConverted.forEach { selectionOption ->
                             DropdownMenuItem(
                                 text = {
                                     Text(
@@ -224,8 +225,8 @@ fun ConvertUi(
                                     )
                                 } ,
                                 onClick = {
-                                    selectedOptionText = selectionOption
-                                    expanded = false
+                                    selectedOptionTextConverted = selectionOption
+                                    isExpanded = false
                                 }
                             )
                         }
@@ -237,7 +238,7 @@ fun ConvertUi(
                         .fillMaxWidth()
                         .height(50.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color.LightGray) , contentAlignment = Alignment.Center
+                        .background(Color.LightGray)
                 ) {
                     Text(
                         text = text , style = TextStyle(
@@ -253,4 +254,8 @@ fun ConvertUi(
             }
         }
     }
+}
+
+fun generateToast(context: Context , from: String , to: String) {
+    Toast.makeText(context , "$from to $to" , Toast.LENGTH_SHORT).show()
 }

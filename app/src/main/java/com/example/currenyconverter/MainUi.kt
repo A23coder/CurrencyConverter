@@ -64,11 +64,11 @@ fun CcUI(modifier: Modifier = Modifier) {
 
             ElevatedCard(
                 elevation = CardDefaults.cardElevation(
-                    defaultElevation = 26.dp
+                    defaultElevation = 5.dp
                 ) ,
                 shape = RoundedCornerShape(50.dp) ,
                 modifier = modifier
-                    .size(500.dp)
+                    .size(480.dp)
                     .padding(top = 100.dp) ,
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White ,

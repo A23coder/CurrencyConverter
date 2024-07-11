@@ -79,9 +79,7 @@ fun CcUI(modifier: Modifier = Modifier) {
                         .padding(20.dp)
                         .fillMaxSize() ,
                 ) {
-                    ConvertUi(onAmountChange = {
-                        "1000"
-                    })
+                    ConvertUi()
                 }
             }
 

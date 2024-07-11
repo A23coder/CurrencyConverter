@@ -1,7 +1,5 @@
 package com.example.currenyconverter
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -45,18 +43,13 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ConvertUi(
     modifier: Modifier = Modifier ,
-    currencyCode: String = "INR" ,
-    amount: String = "0.0" ,
-    onAmountChange: (String) -> Unit ,
 ) {
     val context = LocalContext.current
     val currencies = listOf(
-        "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD" ,
-        "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
+        "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
     )
     val currenciesConverted = listOf(
-        "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD" ,
-        "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
+        "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
     )
     var selectedOptionText by remember { mutableStateOf(currencies[0]) }
     var selectedOptionTextConverted by remember { mutableStateOf(currenciesConverted[4]) }
@@ -64,17 +57,17 @@ fun ConvertUi(
     var expanded by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
+    var showResult by remember { mutableStateOf(false) }
 
-    Column(Modifier.wrapContentSize()) {
+    Column(modifier = Modifier.wrapContentSize()) {
         Text(
             modifier = modifier.padding(top = 10.dp , start = 10.dp , bottom = 10.dp) ,
             text = "Amount" ,
-            style = TextStyle(
-                fontSize = 20.sp , color = Color(0xFF444444)
-            )
+            style = TextStyle(fontSize = 20.sp , color = Color(0xFF444444))
         )
     }
-    Column(Modifier.fillMaxSize()) {
+
+    Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = modifier
                 .padding(10.dp)
@@ -87,7 +80,7 @@ fun ConvertUi(
                 TextField(
                     modifier = Modifier
                         .menuAnchor()
-                        .fillMaxWidth(.5f) ,
+                        .fillMaxWidth(0.5f) ,
                     readOnly = true ,
                     value = selectedOptionText ,
                     onValueChange = {} ,
@@ -98,7 +91,7 @@ fun ConvertUi(
                     ) ,
                     textStyle = TextStyle(
                         fontSize = 20.sp ,
-                        color = colorResource(id = R.color.lightBlue) ,
+                        color = colorResource(id = R.color.purple_500) ,
                         fontWeight = FontWeight.W500
                     )
                 )
@@ -110,10 +103,7 @@ fun ConvertUi(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    selectionOption , style =
-                                    TextStyle(
-                                        fontSize = 20.sp
-                                    )
+                                    selectionOption , style = TextStyle(fontSize = 20.sp)
                                 )
                             } ,
                             onClick = {
@@ -167,19 +157,20 @@ fun ConvertUi(
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
-                                generateToast(context , selectedOptionText , selectedOptionTextConverted)
-                            } ,
+                                showResult = !showResult
+                            }
                     )
                 }
             }
+        }
+        if (showResult) {
+            MakeUi(text = text , context = context)
         }
         Column(modifier.wrapContentSize()) {
             Text(
                 modifier = modifier.padding(top = 10.dp , start = 10.dp , bottom = 10.dp) ,
                 text = "Converted Amount" ,
-                style = TextStyle(
-                    fontSize = 20.sp , color = Color(0xFF444444)
-                )
+                style = TextStyle(fontSize = 20.sp , color = Color(0xFF444444))
             )
         }
         Column(modifier.fillMaxWidth()) {
@@ -195,7 +186,7 @@ fun ConvertUi(
                     TextField(
                         modifier = Modifier
                             .menuAnchor()
-                            .fillMaxWidth(.5f) ,
+                            .fillMaxWidth(0.5f) ,
                         readOnly = true ,
                         value = selectedOptionTextConverted ,
                         onValueChange = {} ,
@@ -206,7 +197,7 @@ fun ConvertUi(
                         ) ,
                         textStyle = TextStyle(
                             fontSize = 20.sp ,
-                            color = colorResource(id = R.color.lightBlue) ,
+                            color = colorResource(id = R.color.purple_500) ,
                             fontWeight = FontWeight.W500
                         )
                     )
@@ -218,10 +209,7 @@ fun ConvertUi(
                             DropdownMenuItem(
                                 text = {
                                     Text(
-                                        selectionOption , style =
-                                        TextStyle(
-                                            fontSize = 20.sp
-                                        )
+                                        selectionOption , style = TextStyle(fontSize = 20.sp)
                                     )
                                 } ,
                                 onClick = {
@@ -238,7 +226,7 @@ fun ConvertUi(
                         .fillMaxWidth()
                         .height(50.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color.LightGray)
+                        .background(Color.LightGray) ,
                 ) {
                     Text(
                         text = text , style = TextStyle(
@@ -249,13 +237,10 @@ fun ConvertUi(
                         ) , modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = 20.dp)
+                            .align(Alignment.Center)
                     )
                 }
             }
         }
     }
-}
-
-fun generateToast(context: Context , from: String , to: String) {
-    Toast.makeText(context , "$from to $to" , Toast.LENGTH_SHORT).show()
 }

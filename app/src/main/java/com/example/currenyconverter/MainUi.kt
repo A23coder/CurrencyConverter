@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.currenyconverter.viewmodel.CurrencyViewModel
 
 @Composable
 fun CcUI(modifier: Modifier = Modifier) {
@@ -79,40 +80,9 @@ fun CcUI(modifier: Modifier = Modifier) {
                         .padding(20.dp)
                         .fillMaxSize() ,
                 ) {
-                    ConvertUi()
+                    ConvertUi(viewModel = CurrencyViewModel())
                 }
             }
-
-            Text(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = 40.dp ,
-                        start = 10.dp
-                    ) ,
-                text = stringResource(id = R.string.exchangeRate) ,
-                style = TextStyle(
-                    textAlign = TextAlign.Start ,
-                    fontSize = 15.sp ,
-                ) ,
-                color = Color(0xFF747474)
-            )
-            val exchangeRate = "1 INR = 85.23 USD"
-            Text(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = 10.dp ,
-                        start = 10.dp
-                    ) ,
-                text = exchangeRate ,
-                style = TextStyle(
-                    textAlign = TextAlign.Start ,
-                    fontSize = 20.sp ,
-                    fontWeight = FontWeight.W500
-                ) ,
-                color = Color.Black
-            )
         }
     }
 }

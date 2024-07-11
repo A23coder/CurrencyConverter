@@ -1,5 +1,6 @@
 package com.example.currenyconverter
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -38,26 +39,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.currenyconverter.viewmodel.CurrencyViewModel
 
+@SuppressLint("DefaultLocale")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConvertUi(
     modifier: Modifier = Modifier ,
+    viewModel: CurrencyViewModel ,
 ) {
-    val context = LocalContext.current
+    LocalContext.current
     val currencies = listOf(
         "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
     )
     val currenciesConverted = listOf(
         "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
     )
-    var selectedOptionText by remember { mutableStateOf(currencies[0]) }
-    var selectedOptionTextConverted by remember { mutableStateOf(currenciesConverted[4]) }
+    var selectedOptionText by remember { mutableStateOf(currencies[1]) }
+    var selectedOptionTextConverted by remember { mutableStateOf(currenciesConverted[0]) }
 
     var expanded by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf("") }
-    var showResult by remember { mutableStateOf(false) }
+    var amountText by remember { mutableStateOf("1") }
+    val conversionResult by viewModel.conversionResult
 
     Column(modifier = Modifier.wrapContentSize()) {
         Text(
@@ -115,10 +119,13 @@ fun ConvertUi(
                 }
             }
             TextField(
-                value = text ,
-                onValueChange = { text = it } ,
+                value = amountText ,
+                onValueChange = { amountText = it } ,
                 maxLines = 1 ,
-                textStyle = TextStyle(fontSize = 18.sp) ,
+                minLines = 1 ,
+                textStyle = TextStyle(
+                    fontWeight = FontWeight.W600 , fontSize = 25.sp , textAlign = TextAlign.End
+                ) ,
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.LightGray ,
                     focusedIndicatorColor = Color.Transparent ,
@@ -150,6 +157,7 @@ fun ConvertUi(
                         .size(60.dp)
                         .background(color = Color(0xFF1A237E) , shape = RoundedCornerShape(50.dp))
                 ) {
+                    val amountValue = amountText.toDoubleOrNull() ?: 0.0
                     Icon(
                         painter = painterResource(id = R.drawable.ic_money) ,
                         contentDescription = "Swap" ,
@@ -157,14 +165,16 @@ fun ConvertUi(
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
-                                showResult = !showResult
+                                viewModel.currencyConverter(
+                                    amountValue ,
+                                    selectedOptionText ,
+                                    selectedOptionTextConverted
+                                )
+                                CurrencyViewModel(selectedOptionText , selectedOptionTextConverted)
                             }
                     )
                 }
             }
-        }
-        if (showResult) {
-            MakeUi(text = text , context = context)
         }
         Column(modifier.wrapContentSize()) {
             Text(
@@ -220,7 +230,6 @@ fun ConvertUi(
                         }
                     }
                 }
-
                 Box(
                     modifier = modifier
                         .fillMaxWidth()
@@ -228,12 +237,12 @@ fun ConvertUi(
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.LightGray) ,
                 ) {
+
                     Text(
-                        text = text , style = TextStyle(
+                        text = String.format("%.2f" , conversionResult) , style = TextStyle(
                             fontWeight = FontWeight.Bold ,
-                            fontSize = 25.sp ,
-                            textAlign = TextAlign.End ,
-                            color = Color(0xFF292929)
+                            fontSize = 25.sp , textAlign = TextAlign.End ,
+                            color = Color(0xFF292929) ,
                         ) , modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = 20.dp)

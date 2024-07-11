@@ -11,8 +11,8 @@ fun main() {
 }
 
 fun fetchLatestRates() {
-    val call = RetrofitInstance.api.getLatestRates()
-    val currencyCodeText="ZWL"
+    val call = RetrofitInstance.api.getLatestRates("AUD")
+    val currencyCodeText="INR"
 
     call.enqueue(object : Callback<ExchangeRatesResponse> {
         override fun onResponse(

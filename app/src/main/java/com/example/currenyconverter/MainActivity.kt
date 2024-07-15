@@ -19,7 +19,6 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color(0xFFEEF4F7))
-//                    .background(Color(0xFFEEF4F7))
             ) {
                 CcUI()
             }

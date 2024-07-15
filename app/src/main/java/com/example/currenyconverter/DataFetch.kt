@@ -19,20 +19,29 @@ fun fetchLatestRates() {
             call: Call<ExchangeRatesResponse> ,
             response: Response<ExchangeRatesResponse> ,
         ) {
+            val ccList = mutableListOf("")
             if (response.isSuccessful) {
-                val rates = response.body()
-                if (rates != null) {
-                    for ((currencyCode , rate) in rates.conversion_rates) {
-                        if (currencyCode == currencyCodeText) {
-                            println("Currency code is $currencyCode RATE IS $rate")
-                        }
-                    }
-                } else {
-                    println("Error: Response body is null")
-                }
-            } else {
-                println("Error: ${response.errorBody()?.string()}")
+                val countryCodes = response.body()!!.conversion_rates.keys
+                ccList.add(countryCodes.toString())
             }
+            println(ccList)
+            for (i in ccList) {
+                println(i)
+            }
+//            if (response.isSuccessful) {
+//                val rates = response.body()
+//                if (rates != null) {
+//                    for ((currencyCode , rate) in rates.conversion_rates) {
+//                        if (currencyCode == currencyCodeText) {
+//                            println("Currency code is $currencyCode RATE IS $rate")
+//                        }
+//                    }
+//                } else {
+//                    println("Error: Response body is null")
+//                }
+//            } else {
+//                println("Error: ${response.errorBody()?.string()}")
+//            }
         }
 
         override fun onFailure(call: Call<ExchangeRatesResponse> , t: Throwable) {

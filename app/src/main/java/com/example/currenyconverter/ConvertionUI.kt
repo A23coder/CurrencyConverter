@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -39,6 +39,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.currenyconverter.Utils.Companion.currencies
+import com.example.currenyconverter.Utils.Companion.currenciesConverted
 import com.example.currenyconverter.viewmodel.CurrencyViewModel
 
 @SuppressLint("DefaultLocale")
@@ -48,13 +50,6 @@ fun ConvertUi(
     modifier: Modifier = Modifier ,
     viewModel: CurrencyViewModel ,
 ) {
-    LocalContext.current
-    val currencies = listOf(
-        "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
-    )
-    val currenciesConverted = listOf(
-        "INR" , "USD" , "AUD" , "EUR" , "GBP" , "JPY" , "CNY" , "CAD" , "CHF" , "NZD" , "SGD"
-    )
     var selectedOptionText by remember { mutableStateOf(currencies[1]) }
     var selectedOptionTextConverted by remember { mutableStateOf(currenciesConverted[0]) }
 
@@ -126,7 +121,7 @@ fun ConvertUi(
                 textStyle = TextStyle(
                     fontWeight = FontWeight.W600 , fontSize = 25.sp , textAlign = TextAlign.End
                 ) ,
-                colors = TextFieldDefaults.textFieldColors(
+                colors = textFieldColors(
                     containerColor = Color.LightGray ,
                     focusedIndicatorColor = Color.Transparent ,
                     unfocusedIndicatorColor = Color.Transparent ,
